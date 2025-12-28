@@ -17,6 +17,7 @@ static void CarCenterPose_Calc(OPS_t* ops);
  */
 void OPS_Init(OPS_t* ops, OPS_config_t* ops_config)
 {
+    ops->huart = ops_config->huart;
     ops->pos_x      = 0.0f;
     ops->pos_y      = 0.0f;
     ops->zangle     = 0.0f;
@@ -40,8 +41,7 @@ void OPS_Init(OPS_t* ops, OPS_config_t* ops_config)
     ops->y_offset   = ops_config->y_offset;
     ops->yaw_offset = ops_config->yaw_offset;
 
-    uint8_t dummy_buf = 0;
-    HAL_UART_Receive_IT(ops->huart, &dummy_buf, 1);
+    HAL_UART_Receive_IT(ops->huart, (uint8_t *)&ops->ch, 1);
 }
 
 /**
@@ -256,11 +256,8 @@ void OPS_ParseData(OPS_t* ops, uint8_t data)
  */
 void OPS_HAL_UART_RxCpltCallback(OPS_t* ops)
 {
-    uint8_t recv_data = *(ops->huart->pRxBuffPtr - 1);
-    OPS_ParseData(ops, recv_data);
-
-    uint8_t dummy_buf = 0;
-    HAL_UART_Receive_IT(ops->huart, &dummy_buf, 1);
+    HAL_UART_Receive_IT(ops->huart, (uint8_t *)&ops->ch, 1);
+    OPS_ParseData(ops, ops->ch[0]);
 }
 
 /**
