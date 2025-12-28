@@ -33,6 +33,7 @@ typedef struct
     uint16_t tx_len;      // 待发送数据长度
     uint8_t  recv_state;  // 接收状态机（0-4）
     uint8_t  parse_idx;   // 数据解析索引
+    uint8_t ch[1];
 
     float x_offset;   // X轴偏移（mm，OPS在车体中心前方为正）
     float y_offset;   // Y轴偏移（mm，OPS在车体中心左侧为正）
